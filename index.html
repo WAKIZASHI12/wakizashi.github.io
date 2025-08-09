@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>WAKIZASHI</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
+            padding: 0 15px;
             background: #f5f5f5;
             color: #222;
             font-family: 'Noto Serif JP', serif;
@@ -20,53 +20,60 @@
             text-align: center;
         }
         h1 {
-            font-size: 48px;
-            letter-spacing: 5px;
+            font-size: clamp(2rem, 6vw, 3rem);
+            letter-spacing: 0.3em;
             border-bottom: 3px solid #d62828;
-            padding-bottom: 10px;
+            padding-bottom: 0.5em;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 1.5s ease forwards;
+            max-width: 100%;
+            word-break: break-word;
         }
         .subtext {
-            font-size: 18px;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
             margin-top: 15px;
-            height: 25px;
-            white-space: nowrap;
+            height: auto;
+            max-width: 90vw;
+            white-space: normal;
             border-right: 3px solid #d62828;
             overflow: hidden;
             opacity: 0;
             transform: translateY(10px);
             animation: fadeIn 1.5s ease forwards;
             animation-delay: 0.8s;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
         }
         .links {
             position: absolute;
             bottom: 40px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             opacity: 0;
             animation: fadeIn 1.5s ease forwards;
             animation-delay: 1.4s;
             width: 100%;
-            max-width: 300px;
-            padding: 0 20px;
+            max-width: 320px;
+            padding: 0 15px;
+            box-sizing: border-box;
         }
         a {
             text-decoration: none;
             background: #d62828;
             color: white;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 14px;
+            font-weight: 700;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            padding: 12px 10px;
             border-radius: 10px;
             transition: background 0.3s;
+            display: block;
         }
         a:hover {
             background: #a10000;
         }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -75,29 +82,41 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
         @media (min-width: 600px) {
             .links {
                 flex-direction: row;
                 justify-content: center;
             }
         }
+        @media (max-width: 349px) {
+            h1 {
+                font-size: 2rem;
+                letter-spacing: 0.15em;
+            }
+            .subtext {
+                font-size: 0.85rem;
+                border-right: 2px solid #d62828;
+            }
+            a {
+                font-size: 1rem;
+                padding: 10px 8px;
+            }
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet" />
 </head>
 <body>
     <h1>WAKIZASHI</h1>
     <p class="subtext" id="typewriter"></p>
     <div class="links">
-        <!-- <a href="https://github.com/WAKIZASHI12" target="_blank" onclick="playSound()">GitHub</a> -->
         <a href="https://t.me/Wakizashi_terehel" target="_blank" onclick="playSound()">Telegram</a>
         <a href="https://vk.com/the_wakizashi_terehel" target="_blank" onclick="playSound()">ВКонтакте</a>
         <a href="https://www.instagram.com/the_wakizashi_terehel?igsh=MTJ6Y3RybWxicW9sNQ==" target="_blank" onclick="playSound()">Instagram</a>
     </div>
 
 <script>
-    // Звук кнопок
-    const sound = new Audio('sound/2686.mp3'); 
+    // Аудио для кнопок
+    const sound = new Audio('sound/2686.mp3');
     sound.preload = 'auto';
 
     function playSound() {
@@ -106,15 +125,8 @@
             console.log('Ошибка воспроизведения звука:', err);
         });
     }
-//     const keySound = new Audio("2686.mp3");
-//     keySound.preload = "auto";
 
-//     document.addEventListener("keydown", (event) => {
-//     // Перематываем в начало, чтобы звук мог быстро повторяться
-//         keySound.currentTime = 0;
-//         keySound.play().catch(() => {}); // На случай, если браузер ещё не разрешил звук
-//   });
-    // Динамический текст с последней фиксированной фразой
+    // Динамический текст с адаптацией скорости по ширине экрана
     const texts = [
         "Что ты тут делаешь?",
         "Молчишь...",
@@ -127,14 +139,16 @@
         "Но я всё равно рад, что ты здесь.",
         "Если тебе понравилось, то можешь подписаться на меня в соцсетях.",
         "А если нет, то просто закрой эту страницу."
-        
     ];
+
     let count = 0;
     let index = 0;
     let currentText = '';
     let isDeleting = false;
-    const speed = 100; // скорость печати
-    const deleteSpeed = 50; // скорость удаления
+
+    const isSmallScreen = window.innerWidth < 400;
+    const speed = isSmallScreen ? 150 : 100;
+    const deleteSpeed = isSmallScreen ? 100 : 50;
 
     function typeEffect() {
         const element = document.getElementById("typewriter");
@@ -147,7 +161,6 @@
         }
 
         if (!isDeleting && index === currentText.length) {
-            // Если это последняя фраза — не удаляем её, а оставляем
             if (count === texts.length - 1) return;
             isDeleting = true;
             setTimeout(typeEffect, 1000);
