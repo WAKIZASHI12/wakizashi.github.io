@@ -127,53 +127,75 @@
     }
 
     // Динамический текст с адаптацией скорости по ширине экрана
-    const texts = [
-        "Что ты тут делаешь?",
-        "Молчишь...",
-        "Ну и ладно.",
-        "Смотри.",
-        "WAKIZASHI приветствует тебя.",
-        "Здесь ты найдёшь всё, что я делаю.",
-        "Может быть, тебе это понравится.",
-        "А может и нет.",
-        "Но я всё равно рад, что ты здесь.",
-        "Если тебе понравилось, то можешь подписаться на меня в соцсетях.",
-        "А если нет, то просто закрой эту страницу."
-    ];
+    // Оригинальный полный список текстов
+const fullTexts = [
+    "Что ты тут делаешь?",
+    "Молчишь...",
+    "Ну и ладно.",
+    "Смотри.",
+    "WAKIZASHI приветствует тебя.",
+    "Здесь ты найдёшь всё, что я делаю.",
+    "Может быть, тебе это понравится.",
+    "А может и нет.",
+    "Но я всё равно рад, что ты здесь.",
+    "Если тебе понравилось, то можешь подписаться на меня в соцсетях.",
+    "А если нет, то просто закрой эту страницу."
+];
 
-    let count = 0;
-    let index = 0;
-    let currentText = '';
-    let isDeleting = false;
+// // Мобильный (узкий) вариант — можно оставить, например, только первые 5 строк
+// const mobileTexts = [
+//     "Что ты тут делаешь?",
+//     "Молчишь...",
+//     "Ну и ладно.",
+//     "Смотри.",
+//     "WAKIZASHI приветствует тебя."
+// ];
 
-    const isSmallScreen = window.innerWidth < 400;
-    const speed = isSmallScreen ? 150 : 100;
-    const deleteSpeed = isSmallScreen ? 100 : 50;
+// Выбираем массив в зависимости от ширины экрана
+const isSmallScreen = window.innerWidth < 400;
+const texts = isSmallScreen ? mobileTexts : fullTexts;
 
-    function typeEffect() {
-        const element = document.getElementById("typewriter");
-        currentText = texts[count];
-        
-        if (isDeleting) {
-            element.textContent = currentText.substring(0, index--);
-        } else {
-            element.textContent = currentText.substring(0, index++);
-        }
+// Настраиваем скорость в зависимости от экрана
+const speed = isSmallScreen ? 150 : 100;
+const deleteSpeed = isSmallScreen ? 100 : 50;
 
-        if (!isDeleting && index === currentText.length) {
-            if (count === texts.length - 1) return;
-            isDeleting = true;
-            setTimeout(typeEffect, 1000);
-            return;
-        } else if (isDeleting && index === 0) {
-            isDeleting = false;
-            count = (count + 1) % texts.length;
-        }
+let count = 0;
+let index = 0;
+let currentText = '';
+let isDeleting = false;
 
-        setTimeout(typeEffect, isDeleting ? deleteSpeed : speed);
+function typeEffect() {
+    const element = document.getElementById("typewriter");
+    currentText = texts[count];
+    
+    if (isDeleting) {
+        element.textContent = currentText.substring(0, index--);
+    } else {
+        element.textContent = currentText.substring(0, index++);
     }
 
+    if (!isDeleting && index === currentText.length) {
+        if (count === texts.length - 1) return;
+        isDeleting = true;
+        setTimeout(typeEffect, 1000);
+        return;
+    } else if (isDeleting && index === 0) {
+        isDeleting = false;
+        count = (count + 1) % texts.length;
+    }
+
+    setTimeout(typeEffect, isDeleting ? deleteSpeed : speed);
+}
+
+setTimeout(typeEffect, 1500);
+window.addEventListener('resize', () => {
+    // Перезапускаем эффект при изменении размера экрана
+    count = 0;
+    index = 0;
+    isDeleting = false;
+    document.getElementById("typewriter").textContent = '';
     setTimeout(typeEffect, 1500);
+});
 </script>
 </body>
 </html>
