@@ -31,6 +31,10 @@
         .subtext {
             font-size: 18px;
             margin-top: 15px;
+            height: 25px;
+            white-space: nowrap;
+            border-right: 3px solid #d62828;
+            overflow: hidden;
             opacity: 0;
             transform: translateY(10px);
             animation: fadeIn 1.5s ease forwards;
@@ -83,10 +87,80 @@
 </head>
 <body>
     <h1>WAKIZASHI</h1>
-    <p class="subtext">Здесь ты найдёшь всё, что я делаю.</p>
+    <p class="subtext" id="typewriter"></p>
     <div class="links">
-        <a href="https://github.com/WAKIZASHI12" target="_blank">GitHub</a>
-        <a href="https://t.me/Wakizashi_terehel" target="_blank">Telegram</a>
+        <!-- <a href="https://github.com/WAKIZASHI12" target="_blank" onclick="playSound()">GitHub</a> -->
+        <a href="https://t.me/Wakizashi_terehel" target="_blank" onclick="playSound()">Telegram</a>
+        <a href="https://vk.com/the_wakizashi_terehel" target="_blank" onclick="playSound()">ВКонтакте</a>
+        <a href="https://www.instagram.com/the_wakizashi_terehel?igsh=MTJ6Y3RybWxicW9sNQ==" target="_blank" onclick="playSound()">Instagram</a>
     </div>
+
+<script>
+    // Звук кнопок
+    const sound = new Audio('sound/2686.mp3'); 
+    sound.preload = 'auto';
+
+    function playSound() {
+        sound.currentTime = 0;
+        sound.play().catch(err => {
+            console.log('Ошибка воспроизведения звука:', err);
+        });
+    }
+//     const keySound = new Audio("2686.mp3");
+//     keySound.preload = "auto";
+
+//     document.addEventListener("keydown", (event) => {
+//     // Перематываем в начало, чтобы звук мог быстро повторяться
+//         keySound.currentTime = 0;
+//         keySound.play().catch(() => {}); // На случай, если браузер ещё не разрешил звук
+//   });
+    // Динамический текст с последней фиксированной фразой
+    const texts = [
+        "Что ты тут делаешь?",
+        "Молчишь...",
+        "Ну и ладно.",
+        "Смотри.",
+        "WAKIZASHI приветствует тебя.",
+        "Здесь ты найдёшь всё, что я делаю.",
+        "Может быть, тебе это понравится.",
+        "А может и нет.",
+        "Но я всё равно рад, что ты здесь.",
+        "Если тебе понравилось, то можешь подписаться на меня в соцсетях.",
+        "А если нет, то просто закрой эту страницу."
+        
+    ];
+    let count = 0;
+    let index = 0;
+    let currentText = '';
+    let isDeleting = false;
+    const speed = 100; // скорость печати
+    const deleteSpeed = 50; // скорость удаления
+
+    function typeEffect() {
+        const element = document.getElementById("typewriter");
+        currentText = texts[count];
+        
+        if (isDeleting) {
+            element.textContent = currentText.substring(0, index--);
+        } else {
+            element.textContent = currentText.substring(0, index++);
+        }
+
+        if (!isDeleting && index === currentText.length) {
+            // Если это последняя фраза — не удаляем её, а оставляем
+            if (count === texts.length - 1) return;
+            isDeleting = true;
+            setTimeout(typeEffect, 1000);
+            return;
+        } else if (isDeleting && index === 0) {
+            isDeleting = false;
+            count = (count + 1) % texts.length;
+        }
+
+        setTimeout(typeEffect, isDeleting ? deleteSpeed : speed);
+    }
+
+    setTimeout(typeEffect, 1500);
+</script>
 </body>
 </html>
